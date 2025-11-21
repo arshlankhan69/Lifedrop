@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>LifeDrop — Blood Donation</title>
+    <meta name="description" content="Donate blood. Save lives. LifeDrop - connecting donors and centers." />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Overlay for drawer -->
+    <div class="overlay" id="overlay" aria-hidden="true"></div>
+
+    <header>
+        <div class="container nav">
+            <div style="display:flex;align-items:center;gap:1rem">
+                <div class="brand" aria-label="LifeDrop - Blood Donation">
+                    <div class="logo" aria-hidden="true">LD</div>
+                    <div>
+                        <div style="font-size:.95rem">LifeDrop</div>
+                        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">Donate • Save • Heal</div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="primary" aria-label="Primary">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#donate">Donate</a>
+                <a href="#receiverSection">Receiver</a>
+                <a href="#events">Events</a>
+                <a href="#contact">Contact</a>
+            </nav>
+
+            <div style="display:flex;align-items:center;gap:.75rem">
+                <a class="cta small" href="#donate"><span class="dot"></span> Donate Now</a>
+
+                <button class="hamburger" id="hambtn" aria-label="Open menu" aria-haspopup="true"
+                    aria-controls="drawer">
+                    <span class="bar"></span>
+                </button>
+
+                <!-- Admin quick toggle (locked) -->
+                <button id="adminToggle" class="btn btn-ghost small" title="Admin panel (secure)">Admin</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Drawer content -->
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Main navigation">
+        <button class="close" id="closeDrawer" aria-label="Close menu">✕</button>
+        <div style="display:flex;align-items:center;gap:.85rem">
+            <div class="logo" style="width:50px;height:50px;border-radius:12px">LD</div>
+            <div>
+                <div style="font-weight:800;color:var(--maroon)">LifeDrop</div>
+                <div class="muted small">Donate • Save • Heal</div>
+            </div>
+        </div>
+
+        <nav aria-label="Mobile navigation">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#donate" class="nav-link">Donate</a>
+            <a href="#receiverSection" class="nav-link">Receiver</a>
+            <a href="#events" class="nav-link">Events</a>
+            <a href="#contact" class="nav-link">Contact</a>
+            <a href="#dashboard" class="nav-link">Dashboard</a>
+        </nav>
+
+        <div style="margin-top:auto">
+            <div class="small muted">Need urgent help?</div>
+            <div class="row" style="margin-top:.6rem">
+                <div class="chip">Emergency: 112</div>
+                <a class="btn btn-primary" href="#contact" style="margin-left:auto">Contact Now</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- notifications container -->
+    <div class="notifier" id="notifier" aria-hidden="false"></div>
+
+    <!-- SMS-like chat modal (hidden by default) -->
+    <div id="smsModal" class="sms-modal" style="display:none">
+        <div class="sms-header">
+            <div id="smsTitle">Chat</div>
+            <div style="display:flex;gap:.5rem;align-items:center">
+                <button id="smsClose" class="btn btn-ghost" style="padding:.3rem .5rem">Close</button>
+            </div>
+        </div>
+        <div class="sms-body" id="smsBody"></div>
+        <div class="sms-input">
+            <input id="smsInput" placeholder="Type a message..." />
+            <button id="smsSend" class="chat-btn">Send</button>
+        </div>
+    </div>
+
+    <!-- main content -->
+    <main id="home" class="container">
+        <section class="hero" aria-label="Hero">
+            <div class="hero-left reveal">
+                <span class="eyebrow">Save a life today</span>
+                <h1>Give blood — be the reason someone sees tomorrow.</h1>
+                <p>LifeDrop connects willing donors with local blood banks and drives. Fast signups, safe donations, and
+                    community events — all in one place.</p>
+
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="#donate">Donate Now</a>
+                    <button class="btn btn-ghost" id="learnBtn">How it works</button>
+                    <div class="pulse" title="Blood donation">♥</div>
+                </div>
+
+                <div style="margin-top:1.1rem" class="small muted">Average donation time: ~10 minutes • You can save up
+                    to 3 lives per donation.</div>
+            </div>
+
+            <div class="hero-right reveal delay-1" role="region" aria-label="Quick stats">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                        <div class="muted small">Active donors</div>
+                        <h3 id="statDonors" style="margin:.2rem 0 0">0</h3>
+                    </div>
+                    <div>
+                        <div class="muted small">Requests logged</div>
+                        <h3 id="statReceivers" style="margin:.2rem 0 0">0</h3>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top:1rem;border-radius:12px;padding:.85rem;background:linear-gradient(90deg,#fff,#fff8f8);border:1px solid rgba(123,15,20,0.03);">
+                    <div class="stat">
+                        <h3 id="mostRequested">A+</h3>
+                        <p>Most requested</p>
+                    </div>
+                    <div class="stat">
+                        <h3>Safe & Certified</h3>
+                        <p>Licensed centers</p>
+                    </div>
+                </div>
+
+                <div style="margin-top:1rem;display:flex;gap:.6rem;align-items:center">
+                    <a class="btn btn-primary" href="#donate">Register to Donate</a>
+                    <a class="btn btn-ghost" href="#receiverSection">Request Blood</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about">
+            <div class="section-title">
+                <h2>About LifeDrop</h2>
+                <div class="muted small">Trusted community-driven donation platform</div>
+            </div>
+            <div class="grid" style="grid-template-columns:repeat(3,1fr);">
+                <div class="card reveal">
+                    <h3>Why donate?</h3>
+                    <p class="muted small">Each unit of donated blood can save multiple lives. Donating is quick, safe,
+                        and deeply impactful.</p>
+                </div>
+                <div class="card reveal delay-1">
+                    <h3>Safety</h3>
+                    <p class="muted small">We partner with licensed blood banks following standard protocols and safety
+                        checks.</p>
+                </div>
+                <div class="card reveal delay-2">
+                    <h3>Community</h3>
+                    <p class="muted small">Events across the city — meet neighbors and save lives together.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- DONATE FORM -->
+        <section id="donate">
+            <div class="section-title">
+                <h2>Register to Donate</h2>
+                <div class="muted small">Sign up, pick a center, and choose a time.</div>
+            </div>
+
+            <div class="grid" style="grid-template-columns:2fr 1fr;gap:1rem;align-items:start">
+                <div class="card reveal">
+                    <form id="donationForm" novalidate>
+                        <div class="form-row">
+                            <div class="form-control">
+                                <label for="fname">Full name</label>
+                                <input id="fname" name="fname" type="text" placeholder="e.g. Priya Singh" required>
+                            </div>
+                            <div class="form-control">
+                                <label for="email">Email</label>
+                                <input id="email" name="email" type="email" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row" style="margin-top:.6rem">
+                            <div class="form-control">
+                                <label for="phone">Phone</label>
+                                <input id="phone" name="phone" type="text" placeholder="+91 98xxxx" required>
+                            </div>
+                            <div class="form-control">
+                                <label for="blood">Blood group</label>
+                                <select id="blood" name="blood" required>
+                                    <option value="">Select group</option>
+                                    <option>A+</option>
+                                    <option>A-</option>
+                                    <option>B+</option>
+                                    <option>B-</option>
+                                    <option>AB+</option>
+                                    <option>AB-</option>
+                                    <option>O+</option>
+                                    <option>O-</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:.6rem" class="form-control">
+                            <label for="center">Preferred center</label>
+                            <select id="center" name="center" required>
+                                <option value="">Select center</option>
+                                <option>City Blood Centre — Downtown</option>
+                                <option>Greenfield Medical</option>
+                                <option>Community Health Hub</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-top:.6rem" class="form-control">
+                            <label for="notes">Any notes / medical history (optional)</label>
+                            <textarea id="notes" name="notes"
+                                placeholder="Example: recent travel, medications..."></textarea>
+                        </div>
+
+                        <div style="display:flex;gap:.6rem;margin-top:.9rem;align-items:center">
+                            <button type="submit" class="btn btn-primary">Submit Registration</button>
+                            <button type="button" class="btn btn-ghost" id="clearForm">Clear</button>
+                            <div id="formMsg" class="muted small" style="margin-left:auto"></div>
+                        </div>
+                    </form>
+                </div>
+
+                <aside class="card reveal delay-1">
+                    <h3>Donation checklist</h3>
+                    <ul class="muted small">
+                        <li>Bring valid ID</li>
+                        <li>Eat a healthy meal beforehand</li>
+                        <li>Drink plenty of water</li>
+                        <li>Wait 12 months if you had major surgery</li>
+                    </ul>
+
+                    <div style="margin-top:1rem">
+                        <h4 style="margin:.3rem 0">Eligibility</h4>
+                        <p class="muted small">Generally 18–65 years, 50+ kg, and fit to donate. Check local rules for
+                            specifics.</p>
+                    </div>
+                </aside>
+            </div>
+
+            <!-- live donors list -->
+            <div style="margin-top:1.2rem">
+                <h3 style="color:var(--maroon)">Available Donors</h3>
+                <div id="donorList" class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:.6rem;gap:1rem">
+                </div>
+            </div>
+        </section>
+
+        <!-- RECEIVER SECTION (new) -->
+        <section id="receiverSection">
+            <div class="section-title">
+                <h2>Request Blood</h2>
+                <div class="muted small">Submit a request and we’ll match you with available donors. Use emergency alert
+                    for immediate help.</div>
+            </div>
+
+            <div class="grid" style="grid-template-columns:2fr 1fr;gap:1rem;align-items:start">
+                <div class="card reveal">
+                    <form id="receiverForm" novalidate>
+                        <div class="form-row">
+                            <div class="form-control">
+                                <label for="rname">Full name</label>
+                                <input id="rname" name="rname" type="text" placeholder="e.g. Riya Kapoor" required>
+                            </div>
+                            <div class="form-control">
+                                <label for="rphone">Phone</label>
+                                <input id="rphone" name="rphone" type="text" placeholder="+91 98xxxx" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row" style="margin-top:.6rem">
+                            <div class="form-control">
+                                <label for="rblood">Required Blood Group</label>
+                                <select id="rblood" name="rblood" required>
+                                    <option value="">Select group</option>
+                                    <option>A+</option>
+                                    <option>A-</option>
+                                    <option>B+</option>
+                                    <option>B-</option>
+                                    <option>AB+</option>
+                                    <option>AB-</option>
+                                    <option>O+</option>
+                                    <option>O-</option>
+                                </select>
+                            </div>
+
+                            <div class="form-control">
+                                <label for="urgency">Urgency Level</label>
+                                <select id="urgency" name="urgency" required>
+                                    <option value="">Select urgency</option>
+                                    <option value="low">Low (1–2 days)</option>
+                                    <option value="med">Medium (24 hours)</option>
+                                    <option value="high">High (6 hours)</option>
+                                    <option value="critical">Critical (Immediate)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:.6rem" class="form-control">
+                            <label for="hospital">Hospital / Location</label>
+                            <input id="hospital" name="hospital" type="text" placeholder="e.g. City Hospital, Sector 14"
+                                required>
+                        </div>
+
+                        <div style="margin-top:.6rem" class="form-control">
+                            <label for="condition">Patient Condition (optional)</label>
+                            <textarea id="condition" name="condition"
+                                placeholder="Example: accident case, surgery..."></textarea>
+                        </div>
+
+                        <div style="display:flex;gap:.6rem;margin-top:.9rem;align-items:center">
+                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                            <button type="button" class="btn btn-ghost" id="clearReceiver">Clear</button>
+                            <div id="receiverMsg" class="muted small" style="margin-left:auto"></div>
+                        </div>
+                    </form>
+
+                    <!-- matching results -->
+                    <div style="margin-top:1rem">
+                        <h4 style="margin:.4rem 0">Matching donors</h4>
+                        <div id="matchList" class="grid" style="grid-template-columns:repeat(3,1fr);gap:1rem"></div>
+                    </div>
+
+                    <!-- emergency alert -->
+                    <div style="margin-top:1rem;display:flex;gap:.6rem;align-items:center">
+                        <button id="sendEmergency" class="btn btn-primary">Send Emergency Alert</button>
+                        <div class="muted small">Use only in life-threatening cases — will notify matched donors
+                            immediately.</div>
+                    </div>
+                </div>
+
+                <aside class="card reveal delay-1">
+                    <h3>Receiver Info</h3>
+                    <p class="muted small">We instantly check registered donors against your required blood group using
+                        compatibility rules. Emergency alerts simulate contacting donors and create notifications.</p>
+
+                    <ul class="muted small" style="margin-top:1rem">
+                        <li>Only donors you and admins add are matched</li>
+                        <li>Your data is saved locally (localStorage)</li>
+                        <li>Admin may contact you for verification</li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <!-- EVENTS -->
+        <section id="events">
+            <div class="section-title">
+                <h2>Upcoming Drives</h2>
+                <div class="muted small">Join community donation events near you</div>
+            </div>
+            <div class="grid" style="grid-template-columns:repeat(3,1fr);">
+                <div class="card reveal">
+                    <div class="event">
+                        <div class="date">12<br><span style="font-size:.7rem;opacity:.95">DEC</span></div>
+                        <div>
+                            <h3 style="margin:.1rem 0">Campus Blood Drive</h3>
+                            <div class="muted small">Govt College • 10:00 — 16:00</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card reveal delay-1">
+                    <div class="event">
+                        <div class="date">18<br><span style="font-size:.7rem;opacity:.95">DEC</span></div>
+                        <div>
+                            <h3 style="margin:.1rem 0">Community Center</h3>
+                            <div class="muted small">Community Health Hub • 09:00 — 14:00</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card reveal delay-2">
+                    <div class="event">
+                        <div class="date">25<br><span style="font-size:.7rem;opacity:.95">DEC</span></div>
+                        <div>
+                            <h3 style="margin:.1rem 0">Holiday Drive</h3>
+                            <div class="muted small">Town Square • 11:00 — 18:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials (kept) -->
+        <section aria-label="Testimonials">
+            <div class="section-title">
+                <h2>Voices of donors</h2>
+                <div class="muted small">Real people. Real impact.</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:.6rem">
+                <div class="testimonials" style="flex:1">
+                    <div class="testimonials-inner" id="testimonialInner">
+                        <div class="testimonial card">
+                            <div class="donor-card">
+                                <div class="avatar">A</div>
+                                <div><strong>Asha</strong>
+                                    <div class="muted small">Volunteer donor</div>
+                                </div>
+                            </div>
+                            <p class="muted small" style="margin-top:.6rem">"I was nervous the first time, staff were
+                                comforting and the process was quick. I'll be back every year."</p>
+                        </div>
+                        <div class="testimonial card">
+                            <div class="donor-card">
+                                <div class="avatar">R</div>
+                                <div><strong>Rohit</strong>
+                                    <div class="muted small">Student donor</div>
+                                </div>
+                            </div>
+                            <p class="muted small" style="margin-top:.6rem">"The campus drive made it easy. Great team
+                                and a meaningful morning."</p>
+                        </div>
+                        <div class="testimonial card">
+                            <div class="donor-card">
+                                <div class="avatar">M</div>
+                                <div><strong>Meera</strong>
+                                    <div class="muted small">Community organizer</div>
+                                </div>
+                            </div>
+                            <p class="muted small" style="margin-top:.6rem">"We organized a small drive and LifeDrop
+                                helped manage signups. Smooth and well-run."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:.6rem">
+                    <button class="btn btn-ghost small" id="prev">Prev</button>
+                    <button class="btn btn-ghost small" id="next">Next</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DASHBOARD & ADMIN SECTION (hidden anchor/accessible) -->
+        <section id="dashboard">
+            <div class="section-title">
+                <h2>Dashboard</h2>
+                <div class="muted small">Manage donors, receivers and simulate notifications</div>
+            </div>
+
+            <div class="card reveal">
+                <div class="tabs">
+                    <div class="tab active" data-tab="donorsTab">Donors</div>
+                    <div class="tab" data-tab="receiversTab">Receivers</div>
+                    <div class="tab" data-tab="notificationsTab">Notifications</div>
+                </div>
+
+                <div id="donorsTab" class="tabContent">
+                    <div style="display:flex;gap:1rem;align-items:center;margin-bottom:.8rem">
+                        <button id="exportDonors" class="btn btn-primary">Export Donors (JSON)</button>
+                        <button id="clearDonors" class="btn btn-ghost">Clear Donors</button>
+                        <div class="muted small" style="margin-left:auto">LocalStorage: <code>lifedrop_donors</code>
+                        </div>
+                    </div>
+                    <div id="dashDonors" class="grid" style="grid-template-columns:repeat(3,1fr);gap:1rem"></div>
+                </div>
+
+                <div id="receiversTab" class="tabContent" style="display:none">
+                    <div style="display:flex;gap:1rem;align-items:center;margin-bottom:.8rem">
+                        <button id="exportReceivers" class="btn btn-primary">Export Receivers (JSON)</button>
+                        <button id="clearReceivers" class="btn btn-ghost">Clear Receivers</button>
+                        <div class="muted small" style="margin-left:auto">LocalStorage: <code>lifedrop_receivers</code>
+                        </div>
+                    </div>
+                    <div id="dashReceivers" class="grid" style="grid-template-columns:repeat(3,1fr);gap:1rem"></div>
+                </div>
+
+                <div id="notificationsTab" class="tabContent" style="display:none">
+                    <div style="display:flex;gap:1rem;align-items:center;margin-bottom:.8rem">
+                        <button id="simNotif" class="btn btn-primary">Simulate Notification</button>
+                        <div class="muted small" style="margin-left:auto">Real-time notifications here</div>
+                    </div>
+                    <div id="dashNotifs"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact (kept) -->
+        <section id="contact">
+            <div class="section-title">
+                <h2>Contact & Support</h2>
+                <div class="muted small">Questions? Emergencies? Reach out.</div>
+            </div>
+            <div class="grid" style="grid-template-columns:2fr 1fr;gap:1rem;">
+                <div class="card reveal">
+                    <h3>Get in touch</h3>
+                    <p class="muted small">Email us at <strong>support@lifedrop.org</strong> or call +91 80000 00000</p>
+                    <form id="contactForm" style="margin-top:.6rem" novalidate>
+                        <div class="form-row">
+                            <div class="form-control"><label for="cname">Name</label><input id="cname" type="text"
+                                    required></div>
+                            <div class="form-control"><label for="cemail">Email</label><input id="cemail" type="email"
+                                    required></div>
+                        </div>
+                        <div style="margin-top:.6rem" class="form-control"><label for="cmsg">Message</label><textarea
+                                id="cmsg" required></textarea></div>
+                        <div style="display:flex;gap:.6rem;margin-top:.8rem;align-items:center"><button
+                                class="btn btn-primary" type="submit">Send message</button>
+                            <div id="contactMsg" class="muted small" style="margin-left:auto"></div>
+                        </div>
+                    </form>
+                </div>
+
+                <aside class="card reveal delay-1">
+                    <h3>Drop by</h3>
+                    <div class="muted small">123 Hope Street, Downtown • Mon–Sat 9:00–17:00</div>
+                    <div style="margin-top:1rem">
+                        <h4 style="margin:.3rem 0">Support lines</h4>
+                        <div class="muted small">Donation queries • +91 80000 00001</div>
+                        <div style="margin-top:.35rem" class="muted small">Volunteering • +91 80000 00002</div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div style="font-weight:800;color:var(--maroon)">LifeDrop</div>
+                    <div class="muted small" style="margin-top:.4rem">Donate • Save • Heal</div>
+                </div>
+                <div>
+                    <div style="font-weight:700;margin-bottom:.4rem">Quick links</div>
+                    <div class="muted small">Donate • Events • About • Contact</div>
+                </div>
+                <div>
+                    <div style="font-weight:700;margin-bottom:.4rem">Legal</div>
+                    <div class="muted small">Privacy • Terms</div>
+                </div>
+            </div>
+
+            <div style="margin-top:1.2rem;display:flex;justify-content:space-between;align-items:center;gap:.6rem">
+                <div class="muted small">© <span id="year"></span> LifeDrop. All rights reserved.</div>
+                <div class="muted small">Made with ♥ for the community</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS (functionality for all requested features) -->
+    <script src="script.js"></script>
+</body>
+
+</html>
